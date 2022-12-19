@@ -559,6 +559,7 @@ class DeviceApiController extends Controller
                 }
             }
         }
+        $survey[0]->customer_info = json_decode($survey[0]->customer_info);
         return response([
             'device_locals' => $deviceLang,
             'device_logo' => $deviceLogoUrl,

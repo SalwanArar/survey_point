@@ -28,9 +28,9 @@ class ReviewApiController extends Controller
         $review = json_decode($request->get('review'), true);
         $reviewId = DB::table('reviews')->insertGetId(
             [
-                'contact_number' => $review['contact_number'],
-                'comment' => $review['comment'],
-                'name' => $review['name'],
+//                'contact_number' => $review['contact_number'],
+//                'comment' => $review['comment'],
+//                'name' => $review['name'],
                 'survey_id' => $review['survey_id'],
 //                'device_id' => $review['device_id'],
             ]
@@ -44,6 +44,37 @@ class ReviewApiController extends Controller
                 ]);
             }
         }
+        $customerInfo = $review['reviewed_customer_info'];
+//        foreach ($review['reviewed_customer_info'] as $r) {
+            if ($customerInfo['comment'] != null) {
+                DB::table('reviewed_customers_info')->insert([
+                    'review_id' => $reviewId,
+                    'answer' => $customerInfo['comment'],
+                    'info_type' => 'comment',
+                ]);
+            }
+            if ($customerInfo['name'] != null) {
+                DB::table('reviewed_customers_info')->insert([
+                    'review_id' => $reviewId,
+                    'answer' => $customerInfo['name'],
+                    'info_type' => 'name',
+                ]);
+            }
+            if ($customerInfo['birthday'] != null) {
+                DB::table('reviewed_customers_info')->insert([
+                    'review_id' => $reviewId,
+                    'answer' => $customerInfo['birthday'],
+                    'info_type' => 'birthday',
+                ]);
+            }
+            if ($customerInfo['contact'] != null) {
+                DB::table('reviewed_customers_info')->insert([
+                    'review_id' => $reviewId,
+                    'answer' => $customerInfo['contact'],
+                    'info_type' => 'contact',
+                ]);
+            }
+//        }
         return response($reviewId, 201);
     }
 }
