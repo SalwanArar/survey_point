@@ -5,7 +5,6 @@ use App\Http\Controllers\API\DeviceCodeApiController;
 use App\Http\Controllers\API\ReviewApiController;
 use App\Http\Controllers\API\v02\DeviceCodeApiV2Controller;
 use App\Http\Controllers\API\v02\RegistrationApiController;
-use App\Http\Controllers\AuthorizationController;
 use App\Models\DeviceLanguages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Route::get('/hi', function (){return response([],201);});
 
 //Route::put('/device/{deviceCodeId}', [AuthorizationController::class, 'update']);
 Route::post('/v01/device-code', [DeviceCodeApiController::class, 'store']);

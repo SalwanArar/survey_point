@@ -12,6 +12,7 @@ use App\Models\Question;
 use App\Models\QuestionTranslation;
 use App\Models\Survey;
 use App\Models\TypeOfQuestion;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -73,6 +74,9 @@ class DeviceApiController extends Controller
             return response([], 200);
 
         // login to user and create new token
+        /**
+         * @var  User $user
+         */
         $user = Auth::loginUsingId($device->value('user_id'));
         $token = $user->createToken(
             $device->value('device_name'),
@@ -103,6 +107,9 @@ class DeviceApiController extends Controller
             $updatedAt = '';
         }
 
+        /**
+         * @var User $user
+         */
         $user = Auth::user();
         $deviceId = $user->currentAccessToken()->device_id;
         $device = DB::table('devices')->where('id', '=', $deviceId);
@@ -192,7 +199,11 @@ class DeviceApiController extends Controller
 //            ->where('tokenable_id', '=', Auth::user()->getAuthIdentifier())
 //            ->value('device_id');
 
-        $deviceId = Auth::user()->currentAccessToken()->device_id;
+        /**
+         * @var User $user
+         */
+        $user = Auth::user();
+        $deviceId = $user->currentAccessToken()->device_id;
         DB::table('devices')
             ->where('id', '=', $deviceId)
             ->update([
@@ -325,6 +336,8 @@ class DeviceApiController extends Controller
                     'questions.id',
                     $modelQuestionType->getTable() . '.question_type',
                     'questions.question_id',
+                    'questions.optional',
+                    'questions.question_order'
                 ]
             );
 
@@ -386,11 +399,15 @@ class DeviceApiController extends Controller
                         ];
                     }
 
+
+
                     $question_answers[] = [
                         'question' => [
                             'question_id' => $customQuestion[0]->question_id,
                             'question_type' => $question->question_type,
                             'conditional_id' => null,
+                            'optional' => boolval($question->optional),
+                            'question_order' => $question->question_order,
                             'language' => $questions_translations,
                         ],
                         'answers' => $answers,
@@ -530,6 +547,8 @@ class DeviceApiController extends Controller
                         'question_id' => $question->id,
                         'question_type' => $question->question_type,
                         'conditional_id' => $question->question_id,
+                        'optional' => boolval($question->optional),
+                        'question_order' => $question->question_order,
                         'language' => $questions_translations,
                     ],
                     'answers' => $answers,

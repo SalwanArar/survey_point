@@ -32,7 +32,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('survey', function (Blueprint $table) {
-            //
+            $table->dropColumn('customer_info');
         });
     }
 };
